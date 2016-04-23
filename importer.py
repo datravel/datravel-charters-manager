@@ -17,5 +17,22 @@ def open_remote(source):
     return opener.open(top_level_url)
 
 
+def get_local_fn(source):
+    return source + '.csv'
+
+
+def update_local(source):
+    import shutil
+    from contextlib import closing
+
+    local_file_fn = get_local_source_fn(source)
+
+    with closing(get_from_remote_source(source)) as remote_file:
+        with open(local_file_fn, 'wb') as local_file:
+            shutil.copyfileobj(remote_file, local_file)
+
+    return local_file_fn
+
+
 if __name__ == '__main__':
     pass
