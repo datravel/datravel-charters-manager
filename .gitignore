@@ -4,3 +4,5 @@ __pycache__/
 
 # Distribution / packaging
 .ve_charters/
+
+config.py

@@ -1,0 +1,13 @@
+#coding: utf-8
+
+sources = [
+    {
+        'name': 'test',
+        'remote_proto': 'ftp',
+        'remote_host': 'example.com',
+        'auth_type': 'normal',
+        'remote_user': 'user',
+        'remote_password': 'secret',
+        'path_to_file': '/test.csv',
+    }
+]
