@@ -11,3 +11,9 @@ sources = [
         'path_to_file': '/test.csv',
     }
 ]
+
+icao_to_iata = {
+    'KAR': 'IK',
+    'LLM': 'YC',
+    'KGL': '7K',
+}
