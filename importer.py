@@ -169,13 +169,31 @@ def db_execute(sql, *args):
         connection.close()
 
 
-def db_import_from_locale(csv_fn, source):
-    pass
+def db_import_from_local(csv_fn, source):
+    sql_delete_exist_tkts = 'delete from `{0}` where source = \'{1}\';'
+    db_execute(sql_delete_exist_tkts, source)
+
+    sql_load_tkts_from_file = '''LOAD DATA LOCAL INFILE '{1}'
+        INTO TABLE `{0}`
+        FIELDS TERMINATED BY '\\t'
+        LINES TERMINATED BY '\\r\\n'
+        (ExternalID,AirCompanyCode,DepartureIATA,ArrivalIATA,DepartureTerminal,ArrivalTerminal,AirCraft,FlightNum,@DepartureDate,@ArrivalDate,Price,Currency,Class,Seats,CostUSD,CostRUB,CostEUR,OrderLimit,ReturnWay,AirCompanyCodeReturn,DepartureIATAReturn,ArrivalIATAReturn,DepartureTerminalReturn,ArrivalTerminalReturn,AirCraftReturn,FlightNumReturn,@DepartureDateReturn,@ArrivalDateReturn,ClassReturn,SeatsReturn,CostUSDReturn,CostRUBReturn,CostEURReturn,Baggage,BaggageBack,AirRules,TourOperator, source)
+        SET
+            DepartureDate = STR_TO_DATE(@DepartureDate, '%Y-%m-%d %H:%i:%s'),
+            ArrivalDate = STR_TO_DATE(@ArrivalDate, '%Y-%m-%d %H:%i:%s'),
+            DepartureDateReturn = STR_TO_DATE(@DepartureDateReturn, '%Y-%m-%d %H:%i:%s'),
+            ArrivalDateReturn = STR_TO_DATE(@ArrivalDateReturn, '%Y-%m-%d %H:%i:%s')
+    ;
+    '''
+    db_execute(sql_load_tkts_from_file, csv_fn)
+
+    sql_activate_tkts = 'update `{0}` set active = 1 where source = \'{1}\';'
+    db_execute(sql_activate_tkts, source)
 
 
 def import_charter_tickets(source):
     local_source_fn = update_local(source)
-    local_source_filtered_fn = preimport_handler(local_source_fn, source)
+    local_source_import_ready_fn = preimport_handler(local_source_fn, source)
     db_import_from_local(local_source_import_ready_fn, source)
 
 
