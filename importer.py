@@ -139,9 +139,44 @@ def preimport_handler(in_fn, source):
     return out_fn
 
 
+def db_execute(sql, *args):
+    """Execute sql query
+
+    :param str sql: Query to execute. Query string contains variables {i}.
+
+    :param list args: List of query variables. The 0-th variable should be the table name.
+
+    :return: Number of affected rows
+    :rtype: int
+    """
+    import pymysql.cursors
+    from config import db
+
+    connection = pymysql.connect(host = db['host'],
+                            user = db['user'],
+                            password = db['password'],
+                            db = db['db'],
+                            local_infile = True,
+                            cursorclass = pymysql.cursors.DictCursor)
+
+    try:
+        with connection.cursor() as cursor:
+            #result = cursor.execute( sql % (db['charter_table'],) )
+            result = cursor.execute( sql.format(db['charter_table'], *args) )
+            print result
+        connection.commit()
+    finally:
+        connection.close()
+
+
+def db_import_from_locale(csv_fn, source):
+    pass
+
+
 def import_charter_tickets(source):
     local_source_fn = update_local(source)
     local_source_filtered_fn = preimport_handler(local_source_fn, source)
+    db_import_from_local(local_source_import_ready_fn, source)
 
 
 if __name__ == '__main__':
