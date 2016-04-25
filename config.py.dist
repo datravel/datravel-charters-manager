@@ -1,5 +1,13 @@
 #coding: utf-8
 
+db = {
+    'host': 'localhost',
+    'user': 'user',
+    'password': 'secret',
+    'db': 'db',
+    'charter_table': 'charter',
+}
+
 sources = [
     {
         'name': 'test',
