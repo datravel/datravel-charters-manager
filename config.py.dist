@@ -1,5 +1,7 @@
 #coding: utf-8
 
+tmp_dir = '/tmp'
+
 db = {
     'host': 'localhost',
     'user': 'user',

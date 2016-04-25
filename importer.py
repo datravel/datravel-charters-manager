@@ -17,8 +17,17 @@ def open_remote(source):
     return opener.open(top_level_url)
 
 
+def get_tmp_dir():
+    from config import tmp_dir
+
+    return tmp_dir
+
+
 def get_local_fn(source):
-    return source + '.csv'
+    from time import time
+
+    ts = time()
+    return get_tmp_dir() + '/' + source + '-' + str(ts) + '.csv'
 
 
 def update_local(source):
