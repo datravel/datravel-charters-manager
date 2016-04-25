@@ -25,14 +25,31 @@ def update_local(source):
     import shutil
     from contextlib import closing
 
-    local_file_fn = get_local_source_fn(source)
+    local_file_fn = get_local_fn(source)
 
-    with closing(get_from_remote_source(source)) as remote_file:
+    with closing(open_remote(source)) as remote_file:
         with open(local_file_fn, 'wb') as local_file:
             shutil.copyfileobj(remote_file, local_file)
 
     return local_file_fn
 
 
+def get_tickets(source):
+    import csv
+
+    local_source_fn = update_local(source)
+    with open(local_source_fn, "rb") as csvfile:
+        datareader=csv.reader(csvfile)
+        for row in datareader:
+            yield row
+
+
+def import_charter_tickets(source):
+    count = 0
+    for row in get_tickets(source):
+        count += 1
+    print count
+
+
 if __name__ == '__main__':
-    pass
+    import_charter_tickets('test')
