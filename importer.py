@@ -152,6 +152,7 @@ def db_execute(sql, *args):
     import pymysql.cursors
     from config import db
 
+    count_affected_rows = 0
     connection = pymysql.connect(host = db['host'],
                             user = db['user'],
                             password = db['password'],
@@ -161,17 +162,17 @@ def db_execute(sql, *args):
 
     try:
         with connection.cursor() as cursor:
-            #result = cursor.execute( sql % (db['charter_table'],) )
-            result = cursor.execute( sql.format(db['charter_table'], *args) )
-            print result
+            count_affected_rows = cursor.execute( sql.format(db['charter_table'], *args) )
         connection.commit()
     finally:
         connection.close()
 
+    return count_affected_rows
+
 
 def db_import_from_local(csv_fn, source):
     sql_delete_exist_tkts = 'delete from `{0}` where source = \'{1}\';'
-    db_execute(sql_delete_exist_tkts, source)
+    count_deleted_tkts = db_execute(sql_delete_exist_tkts, source)
 
     sql_load_tkts_from_file = '''LOAD DATA LOCAL INFILE '{1}'
         INTO TABLE `{0}`
@@ -185,10 +186,15 @@ def db_import_from_local(csv_fn, source):
             ArrivalDateReturn = STR_TO_DATE(@ArrivalDateReturn, '%Y-%m-%d %H:%i:%s')
     ;
     '''
-    db_execute(sql_load_tkts_from_file, csv_fn)
+    count_imported_tickets = db_execute(sql_load_tkts_from_file, csv_fn)
 
     sql_activate_tkts = 'update `{0}` set active = 1 where source = \'{1}\';'
-    db_execute(sql_activate_tkts, source)
+    count_activated_tickets = db_execute(sql_activate_tkts, source)
+
+    # Debug
+    print 'Deleted tickets:', count_deleted_tkts
+    print 'Imported tickets:', count_imported_tickets
+    print 'Activated tickets:', count_activated_tickets
 
 
 def import_charter_tickets(source):
