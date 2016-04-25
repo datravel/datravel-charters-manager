@@ -203,5 +203,21 @@ def import_charter_tickets(source):
     db_import_from_local(local_source_import_ready_fn, source)
 
 
+def parse_args():
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Charter tickets importer')
+    parser.add_argument('source', metavar='source', type=str, help = 'source name')
+
+    return parser.parse_args()
+
+
+def main():
+    import argparse
+
+    args = parse_args()
+    import_charter_tickets(args.source)
+
+
 if __name__ == '__main__':
-    import_charter_tickets('test')
+    main()
