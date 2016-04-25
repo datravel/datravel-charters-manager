@@ -78,7 +78,7 @@ def convert_icao_to_iata(tkt_item):
     return tkt_item, flag
 
 
-def preimport_handler(in_fn):
+def preimport_handler(in_fn, source):
     out_fn = in_fn + '.import'
     delete_local(out_fn)
 
@@ -97,6 +97,8 @@ def preimport_handler(in_fn):
         tkt, count_icao_fl = convert_icao_to_iata(tkt)
         count_icao += count_icao_fl
 
+        tkt.append(source)
+
         save_ticket_in_local(tkt, out_fn)
 
         count += 1
@@ -112,7 +114,7 @@ def preimport_handler(in_fn):
 
 def import_charter_tickets(source):
     local_source_fn = update_local(source)
-    local_source_filtered_fn = preimport_handler(local_source_fn)
+    local_source_filtered_fn = preimport_handler(local_source_fn, source)
 
 
 if __name__ == '__main__':
