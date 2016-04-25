@@ -64,10 +64,31 @@ def delete_local(fn):
 
 
 def check_is_title(tkt_item):
+    flight_num = 0
+
+    try:
+        flight_num = int(tkt_item[7])
+    except:
+        flight_num = 0
+
+    if flight_num == 0:
+        return True
+
     return False
 
 
 def check_is_zero_price(tkt_item):
+    ticket_price = 0
+
+    try:
+        # Notice: I don't check float format, float(tkt_item[10].replace(',', '.'))
+        ticket_price = float(tkt_item[10])
+    except:
+        ticket_price = 0
+
+    if ticket_price == 0:
+        return True
+
     return False
 
 
