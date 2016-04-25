@@ -96,6 +96,12 @@ def convert_icao_to_iata(tkt_item):
     from config import icao_to_iata
 
     flag = 0
+    # AirCompanyCode - 1, AirCompanyCode Return - 19
+    for i in (1, 19):
+        if tkt_item[i] in icao_to_iata:
+            tkt_item[i] = icao_to_iata[ tkt_item[i] ]
+            flag = 1
+
     return tkt_item, flag
 
 
