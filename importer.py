@@ -48,7 +48,19 @@ def get_tickets_from_local(csv_fn):
 
 
 def save_ticket_in_local(tkt, csv_fn):
-    pass
+    import csv
+
+    with open(csv_fn, 'a') as csvfile:
+        a = csv.writer(csvfile, delimiter='\t', lineterminator='\r\n')
+        a.writerow(tkt)
+
+
+def delete_local(fn):
+    try:
+        with open(fn, "w"):
+            pass
+    except:
+        pass
 
 
 def check_is_title(tkt_item):
@@ -68,6 +80,7 @@ def convert_icao_to_iata(tkt_item):
 
 def preimport_handler(in_fn):
     out_fn = in_fn + '.import'
+    delete_local(out_fn)
 
     count = 0
     count_is_title = count_is_zero_price = 0
