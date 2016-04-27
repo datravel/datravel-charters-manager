@@ -206,7 +206,7 @@ def db_import_from_local(csv_fn, source):
     print 'Activated tickets:', count_activated_tickets
 
 
-def import_charter_tickets(source):
+def import_charter_tickets(source, stored_file = None):
     local_source_fn = update_local(source)
     local_source_import_ready_fn = preimport_handler(local_source_fn, source)
     db_import_from_local(local_source_import_ready_fn, source)
@@ -217,6 +217,7 @@ def parse_args():
 
     parser = argparse.ArgumentParser(description='Charter tickets importer')
     parser.add_argument('source', metavar='source', type=str, help = 'source name')
+    parser.add_argument('-f', metavar='file', dest='file', type=str, help = 'path to local file with tickets')
 
     return parser.parse_args()
 
@@ -225,7 +226,7 @@ def main():
     import argparse
 
     args = parse_args()
-    import_charter_tickets(args.source)
+    import_charter_tickets(args.source, args.file)
 
 
 if __name__ == '__main__':
