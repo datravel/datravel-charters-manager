@@ -60,11 +60,13 @@ DELIMITERS = {
 
 def get_tickets_from_local(csv_fn, delimiter=None):
     import csv
+    from config import source_titles
 
     csv_delimiter = '\t'
     if delimiter in DELIMITERS:
         csv_delimiter = DELIMITERS[delimiter]
 
+    row_len = len(source_titles)
     with open(csv_fn, "rb") as csvfile:
         datareader=csv.reader(csvfile, delimiter=csv_delimiter, lineterminator='\r\n')
         is_first_line = True
@@ -72,7 +74,7 @@ def get_tickets_from_local(csv_fn, delimiter=None):
             if is_first_line:
                 is_first_line = False
                 continue
-            yield row
+            yield row[0:row_len]
 
 
 def save_ticket_in_local(tkt, csv_fn):
