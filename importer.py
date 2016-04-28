@@ -52,12 +52,21 @@ def copy_local(source, stored_fn):
     return local_file_fn
 
 
-def get_tickets_from_local(csv_fn):
+DELIMITERS = {
+    'comma': ',',
+    'tab': '\t',
+}
+
+
+def get_tickets_from_local(csv_fn, delimiter=None):
     import csv
 
-    print csv_fn
+    csv_delimiter = '\t'
+    if delimiter in DELIMITERS:
+        csv_delimiter = DELIMITERS[delimiter]
+
     with open(csv_fn, "rb") as csvfile:
-        datareader=csv.reader(csvfile, delimiter='\t', lineterminator='\r\n')
+        datareader=csv.reader(csvfile, delimiter=csv_delimiter, lineterminator='\r\n')
         is_first_line = True
         for row in datareader:
             if is_first_line:
@@ -124,14 +133,14 @@ def convert_icao_to_iata(tkt_item):
     return tkt_item, flag
 
 
-def preimport_handler(in_fn, source):
+def preimport_handler(in_fn, source, delimiter=None):
     out_fn = in_fn + '.import'
     delete_local(out_fn)
 
     count = 0
     count_is_title = count_is_zero_price = 0
     count_icao = 0
-    for tkt in get_tickets_from_local(in_fn):
+    for tkt in get_tickets_from_local(in_fn, delimiter):
         if check_is_title(tkt):
             count_is_title += 1
             continue
@@ -216,10 +225,10 @@ def db_import_from_local(csv_fn, source):
     print 'Activated tickets:', count_activated_tickets
 
 
-def import_charter_tickets(source, stored_file = None):
+def import_charter_tickets(source, stored_file = None, stored_file_delimiter = None):
     local_source_fn = update_local(source) if stored_file is None else \
                       copy_local(source, stored_file)
-    local_source_import_ready_fn = preimport_handler(local_source_fn, source)
+    local_source_import_ready_fn = preimport_handler(local_source_fn, source, stored_file_delimiter)
     db_import_from_local(local_source_import_ready_fn, source)
 
 
@@ -227,8 +236,13 @@ def parse_args():
     import argparse
 
     parser = argparse.ArgumentParser(description='Charter tickets importer')
-    parser.add_argument('source', metavar='source', type=str, help = 'source name')
-    parser.add_argument('-f', metavar='file', dest='file', type=str, help = 'path to local file with tickets')
+    parser.add_argument('source', metavar='source', type=str,
+        help = 'source name')
+    parser.add_argument('-f', metavar='file', dest='file', type=str,
+        help = 'path to local file with tickets')
+    parser.add_argument('-d', metavar='delimiter', dest='delimiter', type=str,
+        help = 'delimiter of stored csv file (work only with -f option),\
+                supported values: comma, tab')
 
     return parser.parse_args()
 
@@ -237,7 +251,7 @@ def main():
     import argparse
 
     args = parse_args()
-    import_charter_tickets(args.source, args.file)
+    import_charter_tickets(args.source, args.file, args.delimiter)
 
 
 if __name__ == '__main__':
