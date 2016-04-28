@@ -43,9 +43,19 @@ def update_local(source):
     return local_file_fn
 
 
+def copy_local(source, stored_fn):
+    import shutil
+
+    local_file_fn = get_local_fn(source)
+    shutil.copy(stored_fn, local_file_fn)
+
+    return local_file_fn
+
+
 def get_tickets_from_local(csv_fn):
     import csv
 
+    print csv_fn
     with open(csv_fn, "rb") as csvfile:
         datareader=csv.reader(csvfile, delimiter='\t', lineterminator='\r\n')
         is_first_line = True
@@ -140,7 +150,7 @@ def preimport_handler(in_fn, source):
         count += 1
 
     # Debug
-    print count
+    print 'Rows:', count
     print 'Filtered (titles):', count_is_title
     print 'Filtered (zero prices):', count_is_zero_price
     print 'Converted tkts (icao to iata):', count_icao
@@ -207,7 +217,8 @@ def db_import_from_local(csv_fn, source):
 
 
 def import_charter_tickets(source, stored_file = None):
-    local_source_fn = update_local(source)
+    local_source_fn = update_local(source) if stored_file is None else \
+                      copy_local(source, stored_file)
     local_source_import_ready_fn = preimport_handler(local_source_fn, source)
     db_import_from_local(local_source_import_ready_fn, source)
 
