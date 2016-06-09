@@ -149,7 +149,7 @@ def preimport_handler(in_fn, source, delimiter=None):
             count_is_title += 1
             continue
 
-        tkt_item = price_str_to_float(tkt_item)
+        tkt = price_str_to_float(tkt)
         if check_is_zero_price(tkt):
             count_is_zero_price += 1
             continue
