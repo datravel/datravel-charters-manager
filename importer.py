@@ -108,17 +108,20 @@ def check_is_title(tkt_item):
 
 
 def check_is_zero_price(tkt_item):
-    ticket_price = 0
-
-    try:
-        ticket_price = float(tkt_item[10].replace(',', '.'))
-    except:
-        ticket_price = 0
-
-    if ticket_price == 0:
+    if tkt_item[10] == 0:
         return True
 
     return False
+
+
+def price_str_to_float(tkt_item):
+    """ Convert price string to float """
+    try:
+        tkt_item[10] = float(tkt_item[10].replace(',', '.'))
+    except:
+        tkt_item[10] = 0
+
+    return tkt_item
 
 
 def convert_icao_to_iata(tkt_item):
@@ -145,6 +148,8 @@ def preimport_handler(in_fn, source, delimiter=None):
         if check_is_title(tkt):
             count_is_title += 1
             continue
+
+        tkt_item = price_str_to_float(tkt_item)
         if check_is_zero_price(tkt):
             count_is_zero_price += 1
             continue
