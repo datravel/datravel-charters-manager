@@ -111,8 +111,7 @@ def check_is_zero_price(tkt_item):
     ticket_price = 0
 
     try:
-        # Notice: I don't check float format, float(tkt_item[10].replace(',', '.'))
-        ticket_price = float(tkt_item[10])
+        ticket_price = float(tkt_item[10].replace(',', '.'))
     except:
         ticket_price = 0
 
