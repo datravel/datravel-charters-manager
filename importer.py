@@ -54,6 +54,7 @@ def copy_local(source, stored_fn):
 
 DELIMITERS = {
     'comma': ',',
+    'semicolon': ';',
     'tab': '\t',
 }
 
@@ -248,7 +249,7 @@ def parse_args():
         help = 'path to local file with tickets')
     parser.add_argument('-d', metavar='delimiter', dest='delimiter', type=str,
         help = 'delimiter of stored csv file (work only with -f option),\
-                supported values: comma, tab')
+                supported values: comma, tab, semicolon')
 
     return parser.parse_args()
 
