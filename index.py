@@ -25,5 +25,13 @@ def get_sources():
     )
 
 
+@app.route('/api/v1/source/<source_name>', methods = ['PUT', 'DELETE'])
+def update_source(source_name):
+    from importer import import_charter_tickets
+
+    import_charter_tickets(source_name)
+    return '', 204
+
+
 if __name__ == '__main__':
     app.run()
